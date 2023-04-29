@@ -1,10 +1,10 @@
 # Cadastro Memo
 
-Este é um projeto simples contendo um cadastro em **HTML** e **Javascript**, o desafio aqui é como gerenciar os dados em memória usando apenas o Javascript. Este repo é indicado para iniciantes na linguagem Javascript que queiram iniciar em **DOM (Document Object Model)** e agora surgem questões como:
+Este é um projeto simples contendo um cadastro em **HTML** e **Vanilla Javascript**, o desafio aqui é como gerenciar os dados em memória usando apenas o Javascript. Este repo é indicado para iniciantes na linguagem Javascript que queiram iniciar em **DOM (Document Object Model)** e agora surgem questões como:
 
 *Porque isto é importante para o desenvolvimento web?*
 
-*Porque aprender DOM com Javascript?*
+*Porque aprender DOM com Vanilla Javascript?*
 
 *Porque preciso conhecer de DOM se estou focando em python?*
 

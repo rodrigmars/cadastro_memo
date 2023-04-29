@@ -81,11 +81,13 @@
             logger(`----------------------------`);
 
             containerUsers.innerHTML = tagDiv;
-
-            resetForm();
+            resetForm(name, email, telephone);
         }
 
-        function resetForm() {
+        function resetForm(...fields) {
+            
+            const [name, email, telephone] = fields
+
             name.value = "";
             email.value = "";
             telephone.value = "";
