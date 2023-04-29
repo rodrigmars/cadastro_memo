@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <div>
+            <label for="">Nome</label>
+            <input type="text" name="" id="txtName">
+        </div>
+        <div>
+            <label for="">Email</label>
+            <input type="text" name="" id="txtEmail">
+        </div>
+        <div>
+            <label for="">Telefone</label>
+            <input type="text" name="" id="txtTelephone">
+        </div>
+        <div>
+            <button id="btnAdd">Cadastrar</button>
+        </div>
+    </div>
+
+    <div id="containerUsers" style="width:300px"></div>
+
+
+</body>
+
+</html>
+<script>
+    //Estrutura IIFE(Immediately Invoked Function Expression)
+    ; (function (logger) {
+
+        const name = document.getElementById("txtName");
+        const email = document.getElementById("txtEmail");
+        const telephone = document.getElementById("txtTelephone");
+        const button = document.getElementById("btnAdd");
+        const containerUsers = document.getElementById("containerUsers");
+
+        let pageNumber = 0;
+        let counterPage = 0;
+        let totalPage = 5;
+
+        let users = [];
+
+        button.addEventListener("click", add);
+
+        function add() {
+
+            let tagDiv = '';
+
+            users.push([name.value, email.value, telephone.value]);
+
+            logger(users);
+
+            users.slice(pageNumber, totalPage).reverse().forEach((data) => {
+                tagDiv += `<div style="border-bottom: 2px coral solid"><label>${data[0]}</label>
+                <label>${data[1]}</label>
+                <label>${data[2]}</label>
+                <button>x</button>
+                </div>`
+            });
+
+            counterPage += 1;
+
+            if (counterPage >= 5) {
+                pageNumber += counterPage;
+                totalPage += 5;
+                counterPage = 0;
+            }
+
+            logger(`counterPage:${counterPage}`);
+            logger(`pageNumber:${pageNumber}`);
+            logger(`totalPage:${totalPage}`);
+            logger(`----------------------------`);
+
+            containerUsers.innerHTML = tagDiv;
+
+            resetForm();
+        }
+
+        function resetForm() {
+            name.value = "";
+            email.value = "";
+            telephone.value = "";
+            name.focus();
+        }
+
+    })(console.log);
+</script>
