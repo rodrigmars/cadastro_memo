@@ -35,64 +35,99 @@
 </html>
 <script>
     //Estrutura IIFE(Immediately Invoked Function Expression)
-    ; (function (logger) {
+    function buildTemplate(name, email, telephone) {
+
+        return `<div style="border-bottom: 2px coral solid"><label>${name}</label>
+            <label>${email}</label>
+            <label>${telephone}</label>
+            <button id="btnRemove" onClick="event:fnRemove(${email})">x</button>
+            </div>`
+
+    }
+
+    function resetForm(name, email, telephone) {
+        name.value = "";
+        email.value = "";
+        telephone.value = "";
+        name.focus();
+    }
+
+    ; (function (logger, buildTemplate, resetForm) {
 
         const name = document.getElementById("txtName");
         const email = document.getElementById("txtEmail");
         const telephone = document.getElementById("txtTelephone");
-        const button = document.getElementById("btnAdd");
+        const buttonAdd = document.getElementById("btnAdd");
         const containerUsers = document.getElementById("containerUsers");
+        const notify = document.getElementById("notify");
+        
+        const buttonRemove = document.getElementById("btnRemove");
 
+        let totalUsers = 1
         let pageNumber = 0;
         let counterPage = 0;
         let totalPage = 5;
-
         let users = [];
 
-        button.addEventListener("click", add);
-
-        function add() {
-
-            let tagDiv = '';
+        buttonAdd.addEventListener("click", () => {
 
             users.push([name.value, email.value, telephone.value]);
 
             logger(users);
 
-            users.slice(pageNumber, totalPage).reverse().forEach((data) => {
-                tagDiv += `<div style="border-bottom: 2px coral solid"><label>${data[0]}</label>
-                <label>${data[1]}</label>
-                <label>${data[2]}</label>
-                <button>x</button>
-                </div>`
-            });
-
-            counterPage += 1;
-
-            if (counterPage >= 5) {
-                pageNumber += counterPage;
-                totalPage += 5;
-                counterPage = 0;
+            if (totalUsers === 15) {
+                notify.text = "Total de usuários excedidos"
+                return
             }
 
-            logger(`counterPage:${counterPage}`);
-            logger(`pageNumber:${pageNumber}`);
-            logger(`totalPage:${totalPage}`);
-            logger(`----------------------------`);
+            containerUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
 
-            containerUsers.innerHTML = tagDiv;
+            totalUsers += 1;
+
             resetForm(name, email, telephone);
-        }
 
-        function resetForm(...fields) {
-            
-            const [name, email, telephone] = fields
+            function removeUser(email) {
 
-            name.value = "";
-            email.value = "";
-            telephone.value = "";
-            name.focus();
-        }
+                const user = users.filter((user, index) => {
+                    if (user[1] == email) {
+                        return index
+                    }
+                })
 
-    })(console.log);
+                if (user) {
+
+                    counterRemove += 1;
+
+                    if (counterRemove >= 5) {
+
+                        if (pageNumber >= 5) {
+                            pageNumber -= 5;
+                        }
+
+                        if (totalPage > 5) {
+                            totalPage -= 5;
+                        }
+                    }
+                }
+            }
+        });
+
+    })(console.log, buildTemplate, resetForm);
+
+    let users = [[12133, "teste@gmail.com"], [45462, "beth@gmail.com"], [45462, "julian@gmail.com"]]
+
+    // console.log(users.slice(1))
+    console.log(users[2].indexOf("julian@gmail.com"))
+
+    // const email = "teste@gmail.com"
+
+
+    // const user = users.find((user, index) => {
+    //     if (user[1] === email) {
+    //         return "ok"
+    //     }
+    // })
+
+    // console.log("user:", user)
+
 </script>
