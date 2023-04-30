@@ -11,16 +11,16 @@
 <body>
     <div>
         <div>
-            <label for="">Nome</label>
-            <input type="text" name="" id="txtName">
+            <label for="txtName">Nome</label>
+            <input type="text" name="" id="txtName">*
         </div>
         <div>
-            <label for="">Email</label>
-            <input type="text" name="" id="txtEmail">
+            <label for="txtEmail">Email</label>
+            <input type="text" name="" id="txtEmail">*
         </div>
         <div>
-            <label for="">Telefone</label>
-            <input type="text" name="" id="txtTelephone">
+            <label for="txtTelephone">Telefone</label>
+            <input type="text" name="" id="txtTelephone">*
         </div>
         <div>
             <button id="btnAdd">Cadastrar</button>
@@ -28,40 +28,65 @@
     </div>
 
     <div id="containerUsers" style="width:300px"></div>
-
+    <div>
+        <button id="btnRemove">Excluir</button>
+    </div>
 
 </body>
 
 </html>
 <script>
     //Estrutura IIFE(Immediately Invoked Function Expression)
-    function buildTemplate(name, email, telephone) {
+    function checkForm(name, email, telephone) {
+        if (name.value.trim().length < 1) {
+            name.style.backgroundColor = "yellow";
+            name.focus();
+            return false;
+        }
 
+        if (email.value.trim().length < 1) {
+            email.style.backgroundColor = "yellow";
+            email.focus();
+            return false;
+        }
+
+        if (telephone.value.trim().length < 1) {
+            telephone.style.backgroundColor = "yellow";
+            telephone.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function buildTemplate(name, email, telephone) {
         return `<div style="border-bottom: 2px coral solid"><label>${name}</label>
             <label>${email}</label>
             <label>${telephone}</label>
-            <button id="btnRemove" onClick="event:fnRemove(${email})">x</button>
             </div>`
-
     }
 
     function resetForm(name, email, telephone) {
+        
         name.value = "";
         email.value = "";
         telephone.value = "";
+        name.style.backgroundColor = "";
+        email.style.backgroundColor = "";
+        telephone.style.backgroundColor = "";
+        
         name.focus();
     }
 
-    ; (function (logger, buildTemplate, resetForm) {
+    ; (function (logger, checkForm, buildTemplate, resetForm) {
 
         const name = document.getElementById("txtName");
         const email = document.getElementById("txtEmail");
         const telephone = document.getElementById("txtTelephone");
         const buttonAdd = document.getElementById("btnAdd");
+        const buttonRemove = document.getElementById("btnRemove");
         const containerUsers = document.getElementById("containerUsers");
         const notify = document.getElementById("notify");
-        
-        const buttonRemove = document.getElementById("btnRemove");
 
         let totalUsers = 1
         let pageNumber = 0;
@@ -69,50 +94,54 @@
         let totalPage = 5;
         let users = [];
 
-        buttonAdd.addEventListener("click", () => {
-
-            users.push([name.value, email.value, telephone.value]);
-
-            logger(users);
-
-            if (totalUsers === 15) {
-                notify.text = "Total de usuários excedidos"
-                return
-            }
-
-            containerUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
-
-            totalUsers += 1;
-
-            resetForm(name, email, telephone);
-
-            function removeUser(email) {
-
-                const user = users.filter((user, index) => {
-                    if (user[1] == email) {
-                        return index
-                    }
-                })
-
-                if (user) {
-
-                    counterRemove += 1;
-
-                    if (counterRemove >= 5) {
-
-                        if (pageNumber >= 5) {
-                            pageNumber -= 5;
-                        }
-
-                        if (totalPage > 5) {
-                            totalPage -= 5;
-                        }
-                    }
-                }
-            }
+        buttonRemove.addEventListener("click", () => {
+            return
         });
 
-    })(console.log, buildTemplate, resetForm);
+        buttonAdd.addEventListener("click", () => {
+
+            if (totalUsers === 15) {
+                notify.text = "Total de usuários excedidos";
+                buttonAdd.disabled = true;
+                return;
+            }
+
+            if (checkForm(name, email, telephone)) {
+
+                containerUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
+
+                totalUsers += 1;
+
+                resetForm(name, email, telephone);
+            }
+
+            // function removeUser(email) {
+
+            //     const user = users.filter((user, index) => {
+            //         if (user[1] == email) {
+            //             return index
+            //         }
+            //     })
+
+            //     if (user) {
+
+            //         counterRemove += 1;
+
+            //         if (counterRemove >= 5) {
+
+            //             if (pageNumber >= 5) {
+            //                 pageNumber -= 5;
+            //             }
+
+            //             if (totalPage > 5) {
+            //                 totalPage -= 5;
+            //             }
+            //         }
+            //     }
+            // }
+        });
+
+    })(console.log, checkForm, buildTemplate, resetForm);
 
     let users = [[12133, "teste@gmail.com"], [45462, "beth@gmail.com"], [45462, "julian@gmail.com"]]
 
