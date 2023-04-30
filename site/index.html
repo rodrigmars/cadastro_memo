@@ -6,9 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <style>
+        #notify {
+            color: red;
+            font-size: 40px;
+        }
+    </style>
+
 </head>
 
 <body>
+    <label id="notify"></label>
     <div>
         <div>
             <label for="txtName">Nome</label>
@@ -22,16 +31,26 @@
             <label for="txtTelephone">Telefone</label>
             <input type="text" name="" id="txtTelephone">*
         </div>
-        <div>
-            <button id="btnAdd">Cadastrar</button>
-        </div>
+        <div><button id="btnAdd">Cadastrar</button></div>
     </div>
-
-    <div id="containerUsers" style="width:300px"></div>
+    <div id="containerUsers" style="width:300px">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="" id="chkAll"></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Telephone</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyUsers">
+            </tbody>
+        </table>
+    </div>
     <div>
         <button id="btnRemove">Excluir</button>
-    </div>
 
+    </div>
 </body>
 
 </html>
@@ -60,21 +79,23 @@
     }
 
     function buildTemplate(name, email, telephone) {
-        return `<div style="border-bottom: 2px coral solid"><label>${name}</label>
-            <label>${email}</label>
-            <label>${telephone}</label>
-            </div>`
+        return `<tr>
+            <td><input type="checkbox" name="" id=""></td>
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${telephone}</td>
+            </div></tr>`
     }
 
     function resetForm(name, email, telephone) {
-        
+
         name.value = "";
         email.value = "";
         telephone.value = "";
         name.style.backgroundColor = "";
         email.style.backgroundColor = "";
         telephone.style.backgroundColor = "";
-        
+
         name.focus();
     }
 
@@ -87,58 +108,49 @@
         const buttonRemove = document.getElementById("btnRemove");
         const containerUsers = document.getElementById("containerUsers");
         const notify = document.getElementById("notify");
+        const tbodyUsers = document.getElementById("tbodyUsers");
 
         let totalUsers = 1
         let pageNumber = 0;
         let counterPage = 0;
         let totalPage = 5;
         let users = [];
-
-        buttonRemove.addEventListener("click", () => {
-            return
-        });
+        let chkAll = null
 
         buttonAdd.addEventListener("click", () => {
 
             if (totalUsers === 15) {
-                notify.text = "Total de usuários excedidos";
+                notify.innerText = "Limite total de usuários excedidos";
                 buttonAdd.disabled = true;
                 return;
             }
 
             if (checkForm(name, email, telephone)) {
-
-                containerUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
+                tbodyUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
 
                 totalUsers += 1;
 
+                // if (!chkAll) {
+                //     chkAll = document.getElementById("chkAll");
+                //     console.log("passando aqui")
+                //     chkAll.addEventListener("click", () => {
+                //         logger("teste>>>>>>>>")
+                //     });
+
+                // }
+
                 resetForm(name, email, telephone);
+
             }
 
-            // function removeUser(email) {
 
-            //     const user = users.filter((user, index) => {
-            //         if (user[1] == email) {
-            //             return index
-            //         }
-            //     })
 
-            //     if (user) {
 
-            //         counterRemove += 1;
+        });
 
-            //         if (counterRemove >= 5) {
 
-            //             if (pageNumber >= 5) {
-            //                 pageNumber -= 5;
-            //             }
-
-            //             if (totalPage > 5) {
-            //                 totalPage -= 5;
-            //             }
-            //         }
-            //     }
-            // }
+        buttonRemove.addEventListener("click", () => {
+            return
         });
 
     })(console.log, checkForm, buildTemplate, resetForm);
