@@ -37,7 +37,7 @@
         <table>
             <thead>
                 <tr>
-                    <th><input type="checkbox" name="" id="chkAll"></th>
+                    <th><input type="checkbox" id="chkAll"></th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Telephone</th>
@@ -87,9 +87,9 @@
         return true;
     }
 
-    function buildTemplate(name, email, telephone) {
+    function buildTemplate(index, name, email, telephone) {
         return `<tr>
-            <td><input type="checkbox" name="" id=""></td>
+            <td><input type="checkbox" value="${index}" name="chkUser"></td>
             <td>${name}</td>
             <td>${email}</td>
             <td>${telephone}</td>
@@ -114,18 +114,15 @@
         const name = document.getElementById("txtName");
         const email = document.getElementById("txtEmail");
         const telephone = document.getElementById("txtTelephone");
+        const chkAll = document.getElementById("chkAll");
         const buttonAdd = document.getElementById("btnAdd");
         const buttonRemove = document.getElementById("btnRemove");
         const containerUsers = document.getElementById("containerUsers");
         const notify = document.getElementById("notify");
         const tbodyUsers = document.getElementById("tbodyUsers");
 
-        let totalUsers = 1
-        let pageNumber = 0;
-        let counterPage = 0;
-        let totalPage = 5;
         let users = [];
-        let chkAll = null
+        let totalUsers = 0
 
         buttonAdd.addEventListener("click", () => {
 
@@ -139,7 +136,7 @@
 
                 users.push(name.value, email.value, telephone.value);
 
-                tbodyUsers.innerHTML += buildTemplate(name.value, email.value, telephone.value);
+                tbodyUsers.innerHTML += buildTemplate(totalUsers, name.value, email.value, telephone.value);
 
                 totalUsers += 1;
 
@@ -149,6 +146,16 @@
             }
         });
 
+        chkAll.addEventListener("change", () => {
+
+            // logger(!chkAll)
+            logger(!chkAll.checked, !!chkAll.checked)
+
+            let checkboxes = document.getElementsByName("chkUser");
+
+            checkboxes.forEach(chk => chk.checked = !!chkAll.checked)
+
+        });
 
         buttonRemove.addEventListener("click", () => {
             return
