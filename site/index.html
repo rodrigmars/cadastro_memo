@@ -31,8 +31,9 @@
             <label for="txtTelephone">Telefone</label>
             <input type="text" name="" id="txtTelephone">*
         </div>
-        <div><button id="btnAdd">Cadastrar</button></div>
+        <div><button id="btnAdd">Adicionar</button></div>
     </div>
+    <br>
     <div id="containerUsers" style="width:300px">
         <table>
             <thead>
@@ -49,7 +50,6 @@
     </div>
     <div>
         <button id="btnRemove">Excluir</button>
-
     </div>
 </body>
 
@@ -134,7 +134,7 @@
 
             if (checkForm(name, email, telephone, notify, users)) {
 
-                users.push(name.value, email.value, telephone.value);
+                users.push([name.value, email.value, telephone.value]);
 
                 tbodyUsers.innerHTML += buildTemplate(totalUsers, name.value, email.value, telephone.value);
 
@@ -146,37 +146,36 @@
             }
         });
 
-        chkAll.addEventListener("change", () => {
-
-            // logger(!chkAll)
-            logger(!chkAll.checked, !!chkAll.checked)
-
-            let checkboxes = document.getElementsByName("chkUser");
-
-            checkboxes.forEach(chk => chk.checked = !!chkAll.checked)
-
-        });
+        chkAll.addEventListener("change", () =>
+            document.getElementsByName("chkUser")
+                .forEach(chk => chk.checked = !!chkAll.checked));
 
         buttonRemove.addEventListener("click", () => {
-            return
+
+            const elements = document.querySelectorAll('input[name=chkUser]:checked')
+
+            if (elements.length < 1) {
+                logger("Selecione um registo para exclusão");
+                return;
+            }
+
+            elements.forEach((item, index) => {
+
+                // item.parentNode.parentNode.remove();
+
+                item.closest('tr').remove();
+
+                chkAll.checked = false;
+
+                users.splice(index, 1);
+
+                totalUsers -= 1;
+
+            })
+
         });
 
+
     })(console.log, checkForm, buildTemplate, resetForm);
-
-    let users = [[12133, "teste@gmail.com"], [45462, "beth@gmail.com"], [45462, "julian@gmail.com"]]
-
-    // console.log(users.slice(1))
-    console.log(users[2].indexOf("julian@gmail.com"))
-
-    // const email = "teste@gmail.com"
-
-
-    // const user = users.find((user, index) => {
-    //     if (user[1] === email) {
-    //         return "ok"
-    //     }
-    // })
-
-    // console.log("user:", user)
 
 </script>
