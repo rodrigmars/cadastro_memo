@@ -68,8 +68,8 @@
             email.focus();
             return false;
         }
-
-        if (users.find(data => data === email.value)) {
+        console.log(users, email.value.trim())
+        if (users.find(data => data === email.value.trim())) {
             notify.innerText = `E-mail ${email.value} já informado`;
             email.select();
             email.style.color = "red";
@@ -109,7 +109,37 @@
         name.focus();
     }
 
-    ; (function (logger, checkForm, buildTemplate, resetForm) {
+    function chkAllUsers(chk, chkAll) {
+        chk.forEach(chk => chk.checked = !!chkAll.checked);
+    }
+
+    function removeUsers(logger, chkAll, buttonAdd, users, totalUsers, notify) {
+
+        logger(">>>users", users)
+
+        const elements = document.querySelectorAll('input[name=chkUser]:checked')
+
+        if (elements.length < 1) {
+            logger("Selecione um registo para exclusão");
+            return;
+        }
+
+        elements.forEach((item, index) => {
+
+            item.closest('tr').remove();
+
+            chkAll.checked = false;
+
+            users.splice(index, 1);
+
+            totalUsers -= 1;
+
+        })
+
+        totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = ""): null
+    }
+
+    ; (function (logger, checkForm, buildTemplate, resetForm, chkAllUsers, removeUsers) {
 
         const name = document.getElementById("txtName");
         const email = document.getElementById("txtEmail");
@@ -134,7 +164,7 @@
 
             if (checkForm(name, email, telephone, notify, users)) {
 
-                users.push([name.value, email.value, telephone.value]);
+                users.push([name.value.trim(), email.value.trim(), telephone.value.trim()]);
 
                 tbodyUsers.innerHTML += buildTemplate(totalUsers, name.value, email.value, telephone.value);
 
@@ -146,36 +176,17 @@
             }
         });
 
-        chkAll.addEventListener("change", () =>
-            document.getElementsByName("chkUser")
-                .forEach(chk => chk.checked = !!chkAll.checked));
-
-        buttonRemove.addEventListener("click", () => {
-
-            const elements = document.querySelectorAll('input[name=chkUser]:checked')
-
-            if (elements.length < 1) {
-                logger("Selecione um registo para exclusão");
-                return;
-            }
-
-            elements.forEach((item, index) => {
-
-                item.closest('tr').remove();
-
-                chkAll.checked = false;
-
-                users.splice(index, 1);
-
-                totalUsers -= 1;
-
-            })
-
-            totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = ""): null
-
-        });
+        chkAll.addEventListener("change", _ => chkAllUsers(document.getElementsByName("chkUser"), chkAll))
 
 
-    })(console.log, checkForm, buildTemplate, resetForm);
+        buttonRemove.addEventListener("click", _ => removeUsers(logger,
+            chkAll,
+            buttonAdd,
+            users,
+            totalUsers,
+            notify))
+        
+
+    })(console.log, checkForm, buildTemplate, resetForm, chkAllUsers, removeUsers);
 
 </script>
