@@ -88,7 +88,7 @@
         return true;
     }
 
-    function addUser(resetForm, checkForm, totalUsers, notifier, buttonAdd, users, user) {
+    function addUser(totalUsers, resetForm, checkForm, notifier, buttonAdd, users, user) {
 
         if (totalUsers === 5) {
             notifier.innerText = "Limite total de usuários excedidos";
@@ -137,13 +137,13 @@
         user.name.focus();
     }
 
-    function selectAllUsers(element, checkbox) {
+    function selectUsers(element, checkbox) {
         element.forEach(chk => chk.checked = !!checkbox.checked);
     }
 
-    function removeUsers(logger, chkAll, buttonAdd, users, totalUsers, notify) {
+    function removeUsers(totalUsers, logger, chkAll, buttonAdd, users, notify) {
 
-        const elements = document.querySelectorAll('input[name=chkUser]:checked')
+        const elements = document.querySelectorAll('input[name=chkUser]:checked');
 
         if (elements.length < 1) {
             logger("Selecione um registo para exclusão");
@@ -162,10 +162,12 @@
 
         })
 
-        totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = "") : null
+        totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = "") : null;
+
+        return totalUsers;
     }
 
-    ; (function (logger, checkForm, addUser, buildTemplate, resetForm, chkAllUsers, removeUsers) {
+    ; (function (logger, checkForm, addUser, buildTemplate, resetForm, selectUsers, removeUsers) {
 
         const user = {
             name: document.getElementById("txtName"),
@@ -184,26 +186,30 @@
 
         let totalUsers = 0
 
-        buttonAdd.addEventListener("click", _ => totalUsers = addUser(
+        buttonAdd.addEventListener("click", _ => totalUsers = addUser(totalUsers,
             resetForm,
             checkForm,
-            totalUsers,
             notifier,
             buttonAdd,
             users,
             user));
 
-        chkAll.addEventListener("change", _ =>
-            chkAllUsers(document.getElementsByName("chkUser"), chkAll))
-
-        buttonRemove.addEventListener("click", _ => removeUsers(logger,
+        buttonRemove.addEventListener("click", _ => totalUsers = removeUsers(totalUsers,
+            logger,
             chkAll,
             buttonAdd,
             users,
-            totalUsers,
-            notifier))
+            notifier));
 
+        chkAll.addEventListener("change", _ =>
+            selectUsers(document.getElementsByName("chkUser"), chkAll));
 
-    })(console.log, checkForm, addUser, buildTemplate, resetForm, selectAllUsers, removeUsers);
+    })(console.log,
+        checkForm,
+        addUser,
+        buildTemplate,
+        resetForm,
+        selectUsers,
+        removeUsers);
 
 </script>
