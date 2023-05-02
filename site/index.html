@@ -8,7 +8,7 @@
     <title>Document</title>
 
     <style>
-        #notify {
+        #notifier {
             color: red;
             font-size: 25px;
         }
@@ -54,6 +54,7 @@
 </body>
 
 </html>
+
 <script>
     //Estrutura IIFE(Immediately Invoked Function Expression)
     function checkForm(notifier, user, users) {
@@ -70,7 +71,7 @@
             return false;
         }
 
-        if (users.find(data => data === user.email.value.trim())) {
+        if (users.find(data => data[1] === user.email.value.trim())) {
             notifier.innerText = `E-mail ${user.email.value} já informado`;
             user.email.select();
             user.email.style.color = "red";
@@ -84,11 +85,10 @@
             return false;
         }
 
-
         return true;
     }
 
-    function addUser(totalUsers, resetForm, checkForm, notifier, buttonAdd, users, user) {
+    function addUser(totalUsers, resetForm, checkForm, notifier, buttonAdd, user, users) {
 
         if (totalUsers === 5) {
             notifier.innerText = "Limite total de usuários excedidos";
@@ -191,8 +191,8 @@
             checkForm,
             notifier,
             buttonAdd,
-            users,
-            user));
+            user,
+            users));
 
         buttonRemove.addEventListener("click", _ => totalUsers = removeUsers(totalUsers,
             logger,
