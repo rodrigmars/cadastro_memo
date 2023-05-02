@@ -19,18 +19,19 @@
 <body>
     <label id="notifier"></label>
     <div>
+        <label for="txtName">Nome</label>
         <div>
-            <label for="txtName">Nome</label>
             <input type="text" name="" id="txtName">*
         </div>
+        <label for="txtEmail">Email</label>
         <div>
-            <label for="txtEmail">Email</label>
             <input type="text" name="" id="txtEmail">*
         </div>
+        <label for="txtTelephone">Telefone</label>
         <div>
-            <label for="txtTelephone">Telefone</label>
             <input type="text" name="" id="txtTelephone">*
         </div>
+        <br>
         <div><button id="btnAdd">Adicionar</button></div>
     </div>
     <br>
@@ -144,6 +145,8 @@
     function removeUsers(totalUsers, notifier, chkAll, buttonAdd, users) {
 
         const elements = document.querySelectorAll('input[name=chkUser]:checked');
+
+        notifier.innerText = "";
 
         if (elements.length < 1) {
             notifier.innerText = "Selecione um registo para exclusão";
