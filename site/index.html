@@ -126,7 +126,7 @@
 
         buttonAdd.addEventListener("click", () => {
 
-            if (totalUsers === 15) {
+            if (totalUsers === 5) {
                 notify.innerText = "Limite total de usuários excedidos";
                 buttonAdd.disabled = true;
                 return;
@@ -161,8 +161,6 @@
 
             elements.forEach((item, index) => {
 
-                // item.parentNode.parentNode.remove();
-
                 item.closest('tr').remove();
 
                 chkAll.checked = false;
@@ -172,6 +170,8 @@
                 totalUsers -= 1;
 
             })
+
+            totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = ""): null
 
         });
 
