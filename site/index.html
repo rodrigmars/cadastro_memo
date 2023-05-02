@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <label id="notify"></label>
+    <label id="notifier"></label>
     <div>
         <div>
             <label for="txtName">Nome</label>
@@ -56,30 +56,31 @@
 </html>
 <script>
     //Estrutura IIFE(Immediately Invoked Function Expression)
-    function checkForm(name, email, telephone, notify, users) {
-        if (name.value.trim().length < 1) {
-            name.style.backgroundColor = "yellow";
-            name.focus();
+    function checkForm(notifier, user, users) {
+
+        if (user.name.value.trim().length < 1) {
+            user.name.style.backgroundColor = "yellow";
+            user.name.focus();
             return false;
         }
 
-        if (email.value.trim().length < 1) {
-            email.style.backgroundColor = "yellow";
-            email.focus();
-            return false;
-        }
-        console.log(users, email.value.trim())
-        if (users.find(data => data === email.value.trim())) {
-            notify.innerText = `E-mail ${email.value} já informado`;
-            email.select();
-            email.style.color = "red";
-            email.style.backgroundColor = "yellow";
+        if (user.email.value.trim().length < 1) {
+            user.email.style.backgroundColor = "yellow";
+            user.email.focus();
             return false;
         }
 
-        if (telephone.value.trim().length < 1) {
-            telephone.style.backgroundColor = "yellow";
-            telephone.focus();
+        if (users.find(data => data === user.email.value.trim())) {
+            notifier.innerText = `E-mail ${user.email.value} já informado`;
+            user.email.select();
+            user.email.style.color = "red";
+            user.email.style.backgroundColor = "yellow";
+            return false;
+        }
+
+        if (user.telephone.value.trim().length < 1) {
+            user.telephone.style.backgroundColor = "yellow";
+            user.telephone.focus();
             return false;
         }
 
@@ -87,35 +88,60 @@
         return true;
     }
 
-    function buildTemplate(index, name, email, telephone) {
+    function addUser(resetForm, checkForm, totalUsers, notifier, buttonAdd, users, user) {
+
+        if (totalUsers === 5) {
+            notifier.innerText = "Limite total de usuários excedidos";
+            buttonAdd.disabled = true;
+            return;
+        }
+
+        if (checkForm(notifier, user, users)) {
+
+            users.push([
+                user.name.value.trim(),
+                user.email.value.trim(),
+                user.telephone.value.trim()]);
+
+            tbodyUsers.innerHTML += buildTemplate(totalUsers, user);
+
+            totalUsers += 1;
+
+            resetForm(user);
+
+            notifier.innerText = "";
+        }
+
+        return totalUsers;
+    }
+
+    function buildTemplate(index, user) {
         return `<tr>
             <td><input type="checkbox" value="${index}" name="chkUser"></td>
-            <td>${name}</td>
-            <td>${email}</td>
-            <td>${telephone}</td>
+            <td>${user.name.value}</td>
+            <td>${user.email.value}</td>
+            <td>${user.telephone.value}</td>
             </div></tr>`
     }
 
-    function resetForm(name, email, telephone) {
+    function resetForm(user) {
 
-        name.value = "";
-        email.value = "";
-        telephone.value = "";
-        name.style.backgroundColor = "";
-        email.style.backgroundColor = "";
-        telephone.style.backgroundColor = "";
-        email.style.color = "";
+        user.name.value = "";
+        user.email.value = "";
+        user.telephone.value = "";
+        user.name.style.backgroundColor = "";
+        user.email.style.backgroundColor = "";
+        user.telephone.style.backgroundColor = "";
+        user.email.style.color = "";
 
-        name.focus();
+        user.name.focus();
     }
 
-    function chkAllUsers(chk, chkAll) {
-        chk.forEach(chk => chk.checked = !!chkAll.checked);
+    function selectAllUsers(element, checkbox) {
+        element.forEach(chk => chk.checked = !!checkbox.checked);
     }
 
     function removeUsers(logger, chkAll, buttonAdd, users, totalUsers, notify) {
-
-        logger(">>>users", users)
 
         const elements = document.querySelectorAll('input[name=chkUser]:checked')
 
@@ -136,57 +162,48 @@
 
         })
 
-        totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = ""): null
+        totalUsers < 5 ? (buttonAdd.disabled = false, notify.innerText = "") : null
     }
 
-    ; (function (logger, checkForm, buildTemplate, resetForm, chkAllUsers, removeUsers) {
+    ; (function (logger, checkForm, addUser, buildTemplate, resetForm, chkAllUsers, removeUsers) {
 
-        const name = document.getElementById("txtName");
-        const email = document.getElementById("txtEmail");
-        const telephone = document.getElementById("txtTelephone");
+        const user = {
+            name: document.getElementById("txtName"),
+            email: document.getElementById("txtEmail"),
+            telephone: document.getElementById("txtTelephone")
+        };
+
         const chkAll = document.getElementById("chkAll");
         const buttonAdd = document.getElementById("btnAdd");
         const buttonRemove = document.getElementById("btnRemove");
         const containerUsers = document.getElementById("containerUsers");
-        const notify = document.getElementById("notify");
+        const notifier = document.getElementById("notifier");
         const tbodyUsers = document.getElementById("tbodyUsers");
 
         let users = [];
+
         let totalUsers = 0
 
-        buttonAdd.addEventListener("click", () => {
+        buttonAdd.addEventListener("click", _ => totalUsers = addUser(
+            resetForm,
+            checkForm,
+            totalUsers,
+            notifier,
+            buttonAdd,
+            users,
+            user));
 
-            if (totalUsers === 5) {
-                notify.innerText = "Limite total de usuários excedidos";
-                buttonAdd.disabled = true;
-                return;
-            }
-
-            if (checkForm(name, email, telephone, notify, users)) {
-
-                users.push([name.value.trim(), email.value.trim(), telephone.value.trim()]);
-
-                tbodyUsers.innerHTML += buildTemplate(totalUsers, name.value, email.value, telephone.value);
-
-                totalUsers += 1;
-
-                resetForm(name, email, telephone);
-
-                notify.innerText = "";
-            }
-        });
-
-        chkAll.addEventListener("change", _ => chkAllUsers(document.getElementsByName("chkUser"), chkAll))
-
+        chkAll.addEventListener("change", _ =>
+            chkAllUsers(document.getElementsByName("chkUser"), chkAll))
 
         buttonRemove.addEventListener("click", _ => removeUsers(logger,
             chkAll,
             buttonAdd,
             users,
             totalUsers,
-            notify))
-        
+            notifier))
 
-    })(console.log, checkForm, buildTemplate, resetForm, chkAllUsers, removeUsers);
+
+    })(console.log, checkForm, addUser, buildTemplate, resetForm, selectAllUsers, removeUsers);
 
 </script>
